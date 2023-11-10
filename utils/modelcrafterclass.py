@@ -18,9 +18,9 @@ class ModelCrafter:
 
         self.results_per_fold = dict()
 
-        self.kf = KFold(n_splits=folds)
+        self.kf = KFold(n_splits=folds, random_state = 42 ,shuffle = True)
         
-        self.folds = folds 
+        self.folds = folds
 
     def AddModel(self, modelos : list = []) -> None:
         """Método para adicionar modelos ao objeto. A estrutura é uma lista de tuplas onde a tupla segue o seguinte esquema: (nome do modelo, modelo instanciado)"""
@@ -65,10 +65,8 @@ class ModelCrafter:
 
 
             f1_train  =  f1_score(y_train,pred_train)
-            auc_train =  roc_auc_score(y_train,pred_train)
-
             f1_test = f1_score(y_test,pred_test)
-            auc_test = roc_auc_score(y_test, pred_test)
+            
 
             resultados['modelo'].append(nome_modelo)
             resultados['f1_treino'].append(f1_train)
