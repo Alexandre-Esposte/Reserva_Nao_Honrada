@@ -37,17 +37,3 @@ def curve(model,x_train,y_train,qte=100):
 
     plt.tight_layout()
     return limiares, recalls, precisions, f1s
-
-
-def viabilidade(model,x_test,y_test,limiar):
-
-    prob = model.predict_proba(x_test)[:,1]
-
-    pred = np.where(prob >= limiar,1,0)
-
-    matrix = confusion_matrix(y_test, pred)
-
-    vp = matrix[1,1]
-    vn = matrix[0,0]
-    fp = matrix[0,1]
-    fn = matrix[1,0]

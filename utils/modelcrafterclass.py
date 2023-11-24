@@ -3,7 +3,7 @@ import pandas                as pd
 import matplotlib.pyplot     as plt
 import seaborn               as sns
 
-from sklearn.metrics 	     import precision_score, recall_score, f1_score
+from sklearn.metrics 	     import precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.compose 	     import ColumnTransformer
 from sklearn.pipeline 	     import Pipeline
 from sklearn.model_selection import KFold, train_test_split
@@ -37,14 +37,36 @@ class ModelCrafter:
 
         del self.models[nome]
 
-          
+    def _Viabilidade(self,model,x,y, limiar):
+    
+        prob = model.predict_proba(x)[:,1]
 
-    def Validacao(self, X_train: pd.DataFrame = None, X_test: pd.DataFrame = None , y_train: pd.Series = None, y_test: pd.Series = None, pipe: Pipeline = None):
+        pred = np.where(prob >= limiar,1,0)
+
+        matrix = confusion_matrix(y, pred)
+
+        tn, fp, fn, tp = matrix.ravel()
+
+        custo_mitigar = tp*55
+
+        rendimento = (tn*55)
+
+        rendimento_n_contabilizado = fp*55
+
+        gastos = fn*55
+
+        print(tn,fp,fn,tp)
+
+        return rendimento, rendimento_n_contabilizado, custo_mitigar, gastos
+
+
+
+    def Validacao(self, X_train: pd.DataFrame = None, X_test: pd.DataFrame = None , y_train: pd.Series = None, y_test: pd.Series = None, pipe: Pipeline = None, limiar: float = 0.5):
        
         if len(self.models) == 0:
             return "Nenhum modelo adicionado na estrutura"
 
-        resultados = {'modelo':[],'f1_treino':[], 'f1_teste':[]}
+        resultados = {'modelo':[],'f1_treino':[], 'f1_teste':[],'rendimento':[],'rendimento_n_contabilizado':[],'custos_mitigar':[],'gastos':[]}
 
         for aux in self.models.items():
             nome_modelo = aux[0]
@@ -67,10 +89,18 @@ class ModelCrafter:
             f1_train  =  f1_score(y_train,pred_train)
             f1_test = f1_score(y_test,pred_test)
             
+            try:
+                rendimento, rendimento_n_contabilizado, custos_mitigar, gastos = self._Viabilidade(modelo,X_test,y_test,limiar)
+            except:
+                rendimento = custos_mitigar = gastos = rendimento_n_contabilizado = np.nan
 
             resultados['modelo'].append(nome_modelo)
             resultados['f1_treino'].append(f1_train)
             resultados['f1_teste'].append(f1_test)
+            resultados['rendimento'].append(rendimento)
+            resultados['custos_mitigar'].append(custos_mitigar)
+            resultados['gastos'].append(gastos)
+            resultados['rendimento_n_contabilizado'].append(rendimento_n_contabilizado)
 
         return pd.DataFrame(resultados)
         
