@@ -55,8 +55,6 @@ class ModelCrafter:
 
         gastos = fn*55
 
-        print(tn,fp,fn,tp)
-
         return rendimento, rendimento_n_contabilizado, custo_mitigar, gastos
 
 
@@ -76,7 +74,7 @@ class ModelCrafter:
                 pipe.steps.pop()
 
             
-            print(f"-----{nome_modelo}-----")
+            #print(f"-----{nome_modelo}-----")
             pipe.steps.append(("Model",modelo))
             modelo = pipe
 

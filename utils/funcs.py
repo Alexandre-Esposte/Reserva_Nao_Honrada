@@ -9,6 +9,10 @@ def curve(model,x_train,y_train,qte=100):
     recalls = []
     precisions =[]
     f1s = []
+    custo_mitigar = []
+    rendimentos =[]
+    rendimentos_n_contabilizados = []
+    gastos_list = []
 
     for limiar in limiares:
 
@@ -16,6 +20,13 @@ def curve(model,x_train,y_train,qte=100):
         pred = model.predict_proba(x_train)[:,1]
 
         y_pred = np.where(pred >= limiar,1,0)
+
+        matrix = confusion_matrix(y_train, y_pred)
+        tn, fp, fn, tp = matrix.ravel()
+        custo_mitigar.append(tp*55)
+        rendimentos.append(tn*55)
+        rendimentos_n_contabilizados.append(fp*55)
+        gastos_list.append(fn*55)
 
         recalls.append(recall_score(y_train,y_pred))
         precisions.append(precision_score(y_train,y_pred))
@@ -31,9 +42,9 @@ def curve(model,x_train,y_train,qte=100):
     ax[0].set_ylabel('(%)')
     ax[0].legend()
 
-    ax[1].plot(recalls,precisions)
-    ax[1].set_xlabel('Recall')
-    ax[1].set_ylabel('Precision')
+    ax[1].plot(rendimentos_n_contabilizados,custo_mitigar)
+    ax[1].set_xlabel('rendimentos não contabilizados')
+    ax[1].set_ylabel('Custos a mitigar')
 
     plt.tight_layout()
     return limiares, recalls, precisions, f1s
