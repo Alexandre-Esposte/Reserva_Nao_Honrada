@@ -1,8 +1,8 @@
 # Introdução
 
-Reserva não honrada é um projeto de portfólio em análise/ciência de dados com o objetivo de aplicar os meus conhecimentos em datasets mais realistas.  É claro para todos nós que no Kaggle existem muitos datasets, entretanto, vários deles já estão tratados, nos poupando de quebrar a cabeça com dados mais complexos. Em outras situações cruzamos com dados fakes, isto é, pessoas geram dados fake e os colocam no Kaggle. 
+Reserva não honrada é um projeto de portfólio em análise/ciência de dados com o objetivo de aplicar os meus conhecimentos em dados mais realistas.  É claro para todos nós que no Kaggle existem muitos datasets, entretanto, vários deles já estão tratados, nos poupando de quebrar a cabeça com dados mais complexos. Há também muitos dados fakes, isto é, pessoas geram dados fake e os colocam no Kaggle. 
 
-Ao iniciar os estudos em dados esses datasets previamente tratados soa como uma mão na roda, entretanto, com o avanço de nossos estudos é necessário que procuremos dados mais realistas, que visam representar a realidade que geralmente vamos encontrar nos problemas reais. 
+Ao iniciar os estudos em dados esses datasets previamente tratados são como uma mão na roda, entretanto, com o avanço de nossos estudos é necessário que procuremos dados mais realistas, que visam representar a realidade que geralmente vamos encontrar nos problemas reais. 
 
 Pensando nisso, tive a ideia de trazer um novo projeto em ciência de dados utilizando uma base de dados real de um salão Canadense.
 
@@ -15,7 +15,7 @@ Desse modo, é interessante ao salão ter meios para mitigar esses custos, otimi
 
 # Dados
 
-Os dados desse salão foram obtidos no Kaggle, o projeto lá  se chama  <a href =https://www.kaggle.com/datasets/frederickferguson/hair-salon-no-show-data-set?select=Service+Listing0.csv >Hair Salon No-Show</a>. 
+Os dados desse salão foram obtidos no Kaggle através do link: [Hair Salon No-Show](https://www.kaggle.com/datasets/frederickferguson/hair-salon-no-show-data-set?select=Service+Listing0.csv) 
 
 Esse banco de dados é constituído por 7 tabelas que estão listadas a seguir:
 
@@ -36,8 +36,7 @@ Esse banco de dados é constituído por 7 tabelas que estão listadas a seguir:
 >    * Cancelamentos de clientes são reservas que foram canceladas.
 
 >* **No-Show Report0**
->    * Esta é uma lista de reservas de não comparecimento que não foram canceladas antes da data da reserva. Este conjunto não inclui cancelamentos fora da política do salão.
-
+>    * Esta é uma lista de reservas de não comparecimento que não foram canceladas.
 >* **Service Listing0**
 >    * Esta é uma lista de todos os serviços.
 
@@ -73,3 +72,17 @@ Como dito, no diretório **notebooks** se encontram todos os notebooks utilizado
 
 >* **modelagem.ipynb**
 >   * Contém o desenvolvimento de alguns modelos de aprendizado de maquina.
+
+# Objetivo / problema de negócio
+
+Alguns clientes faltam ou simplesmente desmarcam o compromisso com o salão em cima da hora, essa ação gera despesas ao salão, uma vez que o horário poderia ter sido preenchido por outro cliente que honraria o compromisso. Clientes que faltam ou cancelam o serviço com um prazo menor do que dois dias podem ser configuradas como clientes que não seguiram as politicas do salão.
+
+Desse modo, o nosso objetivo nesse projeto consiste em desenvolver um modelo preditivo que seja capaz de identificar clientes que possivelmente não vão seguir as políticas do salão.
+
+Espera-se conseguir com isso uma maneira de mitigar os custos envolvidos.
+
+# Estimativas
+
+Analisando os dados históricos do salão é possível determinar que na mediana os clientes geram de receita 55 CAD (dólares canadenses). Logo, o salão vai estar deixando de receber 55 CAD de receita para cada cliente que não honra com os compromissos marcados com o salão.
+
+Pode-se determinar com os dados históricos que  o salão deixou de faturar 3245 CAD com clientes que faltaram ao serviço e 7700 CAD com pessoas que cancelaram o serviço com um prazo menor do que dois dias. Ao todo o salão deixou de arrecadar 10945 CAD devido aos clientes não respeitarem as políticas.
