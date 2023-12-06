@@ -101,9 +101,72 @@ Um problema encontrado são que desses 798 clientes 442 deles são novos cliente
 
 O dataset resultante ao consideramos esses clientes cai para 356 instâncias, onde 92%  são da classe 0 e 8% são da classe 1. Além do desbalanceamento considerável das classes observamos também a existência de poucas instâncias para o treinamento de modelos.
 
-Ao treinar os modelos obtemos a seguinte tabela de validação:
 
-'<table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th></th>\n      <th>Rendimento</th>\n      <th>Custo</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th></th>\n      <td>5445</td>\n      <td>440</td>\n    </tr>\n  </tbody>\n</table>'
+Devemos estabelecer as métricas que vamos utilizar para a avaliação dos modelos. Vamos utilizar as três métricas citadas a seguir:
+
+1. **Precision Score;**
+2. **Recall Score;**
+3. **F1 Score;**
+
+A questão central do problema consiste em identificar faltas ou cancelamentos que fujam das políticas do salão. Tais ações acarretam em custos para o salão, desse modo, devemos selecionar se um cliente vai ou não seguir as políticas.
+
+As ações para os possíveis clientes que vão descumprir as políticas não são conhecidas, entretanto, algo deve ser feito para mitigar os custos envolvidos. Uma maneira de fazer isso seria deixar determinados clientes avisados que existe a possibilidade de adiantar o atendimento deles, liberando assim novos horários. Desse modo, o funcionário não vai deixar de trabalhar e vai existir a possibilidade de marcar clientes nos horários que ficaram vagos.
+
+Os custos envolvidos nessas ações de mitigação são desconhecidos, entretanto, podemos desconsidera-lo por enquanto. Podemos imaginar uma situação onde o contato com esses clientes é feito via ligação ou whatsapp. Desse modo, podemos considerar esse custo como sendo zero, ao menos em um primeiro momento.
 
 
-'<table border="1" class="dataframe">\n  <thead>\n    <tr style="text-align: right;">\n      <th></th>\n      <th>modelo</th>\n      <th>f1_treino</th>\n      <th>f1_teste</th>\n      <th>rendimento</th>\n      <th>rendimento_n_contabilizado</th>\n      <th>custos_mitigar</th>\n      <th>gastos</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>regressao_logistica</td>\n      <td>0.296296</td>\n      <td>0.210526</td>\n      <td>2915.0</td>\n      <td>2530.0</td>\n      <td>275.0</td>\n      <td>165.0</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>svc</td>\n      <td>0.325203</td>\n      <td>0.200000</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>knn</td>\n      <td>0.482759</td>\n      <td>0.000000</td>\n      <td>5335.0</td>\n      <td>110.0</td>\n      <td>0.0</td>\n      <td>440.0</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>arvore</td>\n      <td>0.461538</td>\n      <td>0.181818</td>\n      <td>4785.0</td>\n      <td>660.0</td>\n      <td>110.0</td>\n      <td>330.0</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>floresta</td>\n      <td>0.358974</td>\n      <td>0.000000</td>\n      <td>4400.0</td>\n      <td>1045.0</td>\n      <td>220.0</td>\n      <td>220.0</td>\n    </tr>\n    <tr>\n      <th>5</th>\n      <td>adaboost</td>\n      <td>0.307692</td>\n      <td>0.000000</td>\n      <td>5390.0</td>\n      <td>55.0</td>\n      <td>55.0</td>\n      <td>385.0</td>\n    </tr>\n    <tr>\n      <th>6</th>\n      <td>gradientboost</td>\n      <td>0.516129</td>\n      <td>0.285714</td>\n      <td>5225.0</td>\n      <td>220.0</td>\n      <td>110.0</td>\n      <td>330.0</td>\n    </tr>\n    <tr>\n      <th>7</th>\n      <td>xgboost</td>\n      <td>0.342857</td>\n      <td>0.166667</td>\n      <td>5170.0</td>\n      <td>275.0</td>\n      <td>165.0</td>\n      <td>275.0</td>\n    </tr>\n  </tbody>\n</table>'
+Essas métricas serão convertidas para o problema de negócio através da matriz de confusão.
+
+**Verdadeiro Positivo** - Existe a possibilidade de mitigar o custo.
+
+**Verdadeiro Negativo** - Nenhum custo envolvido, teremos lucro devido ao comparecimento do cliente.
+
+**Falso Positivo** - O modelo estima que o cliente não vai cumprir a politica mas na verdade ele vai. Neste caso não teremos um custo real.
+
+**Falso Negativo** - O modelo estima que o cliente vai cumprir a politica mas na verdade ele não vai. Neste caso vamos deixar de faturar.
+
+
+Após o treinamento e validação obtemos os seguintes resultados:
+
+A tabela a seguir indica a contabilidade real (referente ao teste)
+
+<table border="1" class="dataframe">  <thead>    <tr style="text-align: right;">      <th></th>      <th>Rendimento</th>      <th>Custo</th>    </tr>  </thead>  <tbody>    <tr>      <th></th>      <td>5445</td>      <td>440</td>    </tr>  </tbody></table>
+
+
+A tabela a seguir indica os modelos com seus respectivos f1 score de treino e teste e também métricas relacionadas ao negócio.
+
+
+<table border="1" class="dataframe">  <thead>    <tr style="text-align: right;">      <th></th>      <th>modelo</th>      <th>f1_treino</th>      <th>f1_teste</th>      <th>rendimento</th>      <th>rendimento_n_contabilizado</th>      <th>custos_mitigar</th>      <th>gastos</th>    </tr>  </thead>  <tbody>    <tr>      <th>0</th>      <td>regressao_logistica</td>      <td>0.296296</td>      <td>0.210526</td>      <td>2915.0</td>      <td>2530.0</td>      <td>275.0</td>      <td>165.0</td>    </tr>    <tr>      <th>1</th>      <td>svc</td>      <td>0.325203</td>      <td>0.200000</td>      <td>NaN</td>      <td>NaN</td>      <td>NaN</td>      <td>NaN</td>    </tr>    <tr>      <th>2</th>      <td>knn</td>      <td>0.482759</td>      <td>0.000000</td>      <td>5335.0</td>      <td>110.0</td>      <td>0.0</td>      <td>440.0</td>    </tr>    <tr>      <th>3</th>      <td>arvore</td>      <td>0.461538</td>      <td>0.181818</td>      <td>4785.0</td>      <td>660.0</td>      <td>110.0</td>      <td>330.0</td>    </tr>    <tr>      <th>4</th>      <td>floresta</td>      <td>0.358974</td>      <td>0.000000</td>      <td>4400.0</td>      <td>1045.0</td>      <td>220.0</td>      <td>220.0</td>    </tr>    <tr>      <th>5</th>      <td>adaboost</td>      <td>0.307692</td>      <td>0.000000</td>      <td>5390.0</td>      <td>55.0</td>      <td>55.0</td>      <td>385.0</td>    </tr>    <tr>      <th>6</th>      <td>gradientboost</td>      <td>0.516129</td>      <td>0.285714</td>      <td>5225.0</td>      <td>220.0</td>      <td>110.0</td>      <td>330.0</td>    </tr>    <tr>      <th>7</th>      <td>xgboost</td>      <td>0.342857</td>      <td>0.166667</td>      <td>5170.0</td>      <td>275.0</td>      <td>165.0</td>      <td>275.0</td>    </tr>  </tbody></table>
+
+
+Observamos que o nosso melhor modelo foi a Regressão logística. Conseguimos observar que o f1 de treino e teste estão razoavelmente próximos e que esse modelo é aquele que melhor identifica os clientes que não vão seguir as políticas do salão.  Além do f1 score, podemos analisar o modelo a partir das métricas que associam a matriz de confusão ao problema de negócio. Segue listado o que cada métrica dessa representa:
+
+
+* **Rendimento** - Representa o rendimento que o salão terá de acordo com a classificação do modelo.
+
+* **Rendimento não contabilizado** - Está relacionado com os Falsos Positivos, de acordo com o modelo o cliente geraria um custo, mas na realidade esse cliente vai gerar uma receita.
+
+* **Custos mitigar** - Corresponde aos verdadeiros positivos, o modelo conseguiu inferir corretamente a quantidade de dinheiro que o salão deixará de receber e abre a possibilidade para uma possível mitigação desses custos.
+
+* **Gastos** - Representam os falsos negativos, o cliente não vai cumprir com a politica do salão e o modelo falhou em detectar, desse modo o salão deixará de faturar.
+
+
+Novamente observamos que a regressão logística conseguiu capturar muito bem os custos que o salão teria. De 440 CAD de custo o modelo capturou 275 CAD, representando dessa forma uma possível mitigação de 62,5% dos custos.
+
+
+# Conclusão
+
+Com este trabalho, conseguimos simular uma situação mais próxima de uma condição real, utilizando diversos datasets que interagem entre si. Realizamos uma análise exploratória a fim de compreender como o salão obtém lucro, identificar seus funcionários e avaliar seu desempenho ao longo dos meses. Investigamos preferências por dias da semana, a distribuição dos clientes e conduzimos outras análises relevantes. Durante esse processo, detectamos algumas inconsistências nas bases, o que é comum na prática, e desenvolvemos estratégias para lidar com esses desafios.
+
+Após a análise dos dados, construímos o dataset de treino e validação do zero, integrando informações das diversas tabelas presentes em nossa base de dados.
+
+Ao lidar com o dataset resultante, nos deparamos com desafios, incluindo a escassez de dados para treino e teste, bem como um desbalanceamento significativo entre as amostras.
+
+No desfecho, conseguimos desenvolver um modelo inicial que resultou em uma mitigação de 62,5% nos gastos.
+
+# Considerações finais
+
+ 
+Um dos desafios cruciais enfrentados no desfecho do projeto foi a escassez de dados e o notável desbalanceamento, o que complicou significativamente o desenvolvimento de um modelo robusto. Infelizmente, a continuidade do projeto tornou-se inviável devido a não atualização dos dados.
+
+Considere em visitar os notebooks desenvolvidos, nos mesmos contêm  muito conteúdo legal que não foi abordado de forma detalhada neste README. Busquei manter os notebooks o mais explicativos possível. Além disso, no notebook de análises, abordo diversas situações com a base de dados que refletem desafios comuns encontrados na vida real, como valores questionáveis, erros e assim por diante.
